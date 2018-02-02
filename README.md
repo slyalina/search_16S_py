@@ -6,5 +6,7 @@ Requires the following Python packages to be installed:
 - scikit-bio
 - regex
 - numpy
-- docopt
+- docopt  
+
+
 I'm currently using this with python 3.6, so may be not 2.7 compatible
