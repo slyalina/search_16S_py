@@ -99,28 +99,19 @@ def find(sample_seqs, ref_db, outfile_handle, max_n_mismatch_in_motif, min_len, 
                 # Search for forward and reverse motifs, allowing for specified amount of mismatches
                 forward_match = regex.search(motif_F, str(subseq))
                 backward_match = regex.search(motif_R, str(subseq))
-                if forward_match:
+                postfix = "no_motifs"
 
-                    skbio.write(skbio.DNA(str(subseq[forward_match.span()[0]:]),
-                                          metadata={'id': seq.metadata['id'] + ";" +
-                                                          np.array2string(pair + [forward_match.span()[0], 0], separator=",") +
-                                                          ";forward_motif"}),
-                                "fasta",
-                                outfile_handle)
+                if forward_match:
+                    postfix = ";forward_motif_at_" + str(pair[0]+forward_match.span()[0])
                 elif backward_match:
-                    skbio.write(skbio.DNA(str(subseq[:backward_match.span()[1]]),
-                                          metadata={'id': seq.metadata['id'] + ";" +
-                                                          np.array2string(pair + [0, backward_match.span()[1]], separator=",") +
-                                                          ";backward_motif"}),
-                                "fasta",
-                                outfile_handle)
-                else:
-                    skbio.write(skbio.DNA(str(subseq),
-                                          metadata={'id': seq.metadata['id'] + ";" +
-                                                          np.array2string(pair, separator=",") + ";no_motifs"}),
-                                "fasta",
-                                outfile_handle)
-        if nseqs_processed%100 == 0:
+                    postfix = ";backward_motif_at_"+ str(pair[0]+backward_match.span()[0])
+                skbio.write(skbio.DNA(str(subseq),
+                                      metadata={'id': seq.metadata['id'] + ";" +
+                                                      np.array2string(pair, separator=",") +
+                                                      postfix}),
+                            "fasta",
+                            outfile_handle)
+        if nseqs_processed % 100 == 0:
             logging.info('Processed {} test sequences'.format(nseqs_processed))
         nseqs_processed += 1
 
