@@ -26,6 +26,7 @@ Options:
 """
 import logging
 import sys
+import os
 
 import khmer
 import numpy as np
@@ -123,7 +124,10 @@ def main(args):
         if args["-o"] is None:
             args["-o"] = sys.stdout
         else:
-            args["-o"] = open(args["-o"], "a")
+            if os.path.isfile(args["-o"]):
+                raise FileExistsError("File {} already exists".format(args["-o"]))
+            else:
+                args["-o"] = open(args["-o"], "a")
 
         find(args["-q"], args["-d"], args["-o"], int(args["-m"]), int(args["--min_len"]), int(args["--max_len"]))
 
